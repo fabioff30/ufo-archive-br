@@ -36,6 +36,18 @@ yarn-error.log*
 # vercel
 .vercel
 
+# playwright mcp test runs
+.playwright-mcp/
+
+# generated search/listing index (built from public/search-index.json)
+/public/idx/*
+# ... except the translation artifact — needed at deploy time and expensive
+# to regenerate. Output of `npm run translate`.
+!/public/idx/translations.json
+
+# translation cache (populated by `npm run translate`)
+/scripts/.cache/
+
 # typescript
 *.tsbuildinfo
 next-env.d.ts

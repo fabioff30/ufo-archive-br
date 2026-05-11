@@ -1,22 +1,55 @@
 import type { Metadata } from "next";
-import { Inter } from "next/font/google";
+import { Newsreader, IBM_Plex_Sans, JetBrains_Mono } from "next/font/google";
 import "./globals.css";
+import { SiteHeader } from "@/components/site/header";
+import { SiteFooter } from "@/components/site/footer";
 
-const inter = Inter({ subsets: ["latin"] });
+const display = Newsreader({
+  subsets: ["latin", "latin-ext"],
+  variable: "--font-display",
+  display: "swap",
+  style: ["normal", "italic"],
+  weight: ["400", "500", "600", "700"],
+});
+
+const sans = IBM_Plex_Sans({
+  subsets: ["latin", "latin-ext"],
+  variable: "--font-sans",
+  display: "swap",
+  weight: ["400", "500", "600"],
+});
+
+const mono = JetBrains_Mono({
+  subsets: ["latin"],
+  variable: "--font-mono",
+  display: "swap",
+  weight: ["400", "500"],
+});
 
 export const metadata: Metadata = {
-  title: "Arquivo OVNI/UAP — Documentos do Departamento de Defesa dos EUA",
+  title: {
+    default: "Arquivo OVNI/UAP — Documentos do Pentágono em português",
+    template: "%s — Arquivo OVNI/UAP",
+  },
   description:
-    "Busca em português nos documentos desclassificados do Pentágono sobre OVNIs e UAPs. Release 01 — Maio 2026. FBI, CIA, USAF, NASA e mais.",
+    "Busca em português nos documentos desclassificados do Pentágono sobre UAPs e UFOs. Release 01 — maio de 2026. FBI, NASA, USAF Project Blue Book, Departamento de Guerra e Estado.",
+  metadataBase: new URL("https://ufo-archive-br.vercel.app"),
 };
 
 export default function RootLayout({
   children,
 }: Readonly<{ children: React.ReactNode }>) {
   return (
-    <html lang="pt-BR">
-      <body className={`${inter.className} bg-zinc-950 text-zinc-200 min-h-screen`}>
-        {children}
+    <html
+      lang="pt-BR"
+      className={`${display.variable} ${sans.variable} ${mono.variable}`}
+    >
+      <body className="min-h-screen bg-paper text-ink antialiased">
+        <div className="flex min-h-screen flex-col">
+          <SiteHeader />
+          <main className="flex-1">{children}</main>
+          <SiteFooter />
+        </div>
       </body>
     </html>
   );
