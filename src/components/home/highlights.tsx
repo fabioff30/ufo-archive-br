@@ -54,7 +54,7 @@ export async function Highlights() {
                   <div className="overflow-hidden border border-rule bg-ink/5">
                     {/* eslint-disable-next-line @next/next/no-img-element */}
                     <img
-                      src={img || "/sem-imagem.png"}
+                      src={img || "/sem-imagem.webp"}
                       alt={img ? prettifyTitle(record.title) : ""}
                       loading="lazy"
                       className="aspect-[4/3] w-full object-cover transition-transform duration-700 group-hover:scale-[1.02]"
