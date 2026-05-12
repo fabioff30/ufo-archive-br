@@ -3,7 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "build:idx": "tsx scripts/build-index.ts",
+    "idx": "tsx scripts/build-index.ts",
     "translate": "tsx scripts/translate.ts",
     "prebuild": "tsx scripts/build-index.ts",
     "predev": "tsx scripts/build-index.ts",
