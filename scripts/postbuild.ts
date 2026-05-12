@@ -30,27 +30,13 @@ async function pathSize(p: string): Promise<number> {
 }
 
 async function main(): Promise<void> {
+  // Only relevant for static-export builds. On server builds (.next/), Next
+  // already produced everything it needs — there's nothing to trim.
   try {
     await fs.access(OUT_DIR);
   } catch {
-    // If out/ doesn't exist after `next build`, output: "export" was NOT
-    // honored — typically a config-loading issue on the host. Dump the
-    // filesystem so the CI log shows where Next actually wrote.
-    console.error("[postbuild] FATAL: out/ not found after next build.");
-    console.error("[postbuild] Listing project root:");
-    const entries = await fs.readdir(ROOT, { withFileTypes: true });
-    for (const e of entries) {
-      const size = e.isDirectory() ? "(dir)" : "";
-      console.error(`  ${e.name} ${size}`);
-    }
-    try {
-      const dotnext = await fs.readdir(path.join(ROOT, ".next"));
-      console.error(`[postbuild] .next/ has ${dotnext.length} entries: ${dotnext.slice(0, 8).join(", ")}…`);
-    } catch {
-      console.error("[postbuild] .next/ also missing");
-    }
-    console.error("[postbuild] Hint: confirm next.config.{js,mjs} has output: 'export' and is being loaded.");
-    process.exit(1);
+    console.log("[postbuild] server build (no out/) — nothing to trim.");
+    return;
   }
 
   let removed = 0;

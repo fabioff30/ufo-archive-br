@@ -1,18 +1,23 @@
+// Static export is opt-in via STATIC_EXPORT=true. Default = server build
+// (.next/), which is what Vercel and Hostinger's managed Next.js pipeline both
+// expect. To produce a fully static ./out folder for plain Apache/nginx hosts:
+//
+//   STATIC_EXPORT=true npm run build
+//
+// Hostinger NOTE: their CI wraps next.config.mjs (see
+// 6a03626ede2ed.next.config.mjs in their build env) and runs Next as a Node
+// server. Keep `output` unset; "Diretório de saída" in the Hostinger panel
+// should be `.next` (not `out`).
+const staticExport = process.env.STATIC_EXPORT === "true";
+
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-  // Fully static export — writes to ./out at build time.
-  // Required for shared static hosts (Hostinger, Cloudflare Pages, GitHub Pages).
-  // Works on Vercel too: Vercel will serve the prerendered HTML directly.
-  output: "export",
-
-  // /registro/ABC needs to resolve to /registro/ABC/index.html on a static host
-  // (Apache/nginx). Trailing slashes guarantee that.
-  trailingSlash: true,
+  ...(staticExport ? { output: "export", trailingSlash: true } : {}),
 
   images: {
-    // next/image's optimizer requires a Node runtime — not available on static
-    // hosts. We use plain <img> for the war.gov hot-linked photos, but flip
-    // this just in case any next/image slips in.
+    // next/image's optimizer needs a Node runtime. We use plain <img> for
+    // the war.gov hot-linked photos anyway, so unoptimized=true is safe on
+    // both server and static modes.
     unoptimized: true,
     remotePatterns: [
       {
