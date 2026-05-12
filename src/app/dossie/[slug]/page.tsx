@@ -3,6 +3,8 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { agencyLabel, formatDate, loadDossiers, loadSearchIndex, typeLabel } from "@/lib/data";
 import type { SearchRecord } from "@/lib/types";
+import { JsonLd } from "@/components/seo/json-ld";
+import { PUBLISHER, SITE } from "@/lib/site";
 
 export async function generateStaticParams() {
   const dossiers = await loadDossiers();
@@ -18,9 +20,19 @@ export async function generateMetadata({
   const dossiers = await loadDossiers();
   const d = dossiers[slug];
   if (!d) return { title: "Dossiê não encontrado" };
+  const description =
+    d.blurb || `${d.recordIds.length} documentos sobre ${d.title}.`;
+  const canonical = `/dossie/${slug}`;
   return {
     title: `Dossiê: ${d.title}`,
-    description: d.blurb || `${d.recordIds.length} documentos sobre ${d.title}.`,
+    description,
+    alternates: { canonical },
+    openGraph: {
+      title: `Dossiê: ${d.title} — Arquivo OVNI/UAP`,
+      description,
+      url: `${SITE.origin}${canonical}/`,
+      type: "website",
+    },
   };
 }
 
@@ -39,8 +51,47 @@ export default async function DossierPage({
 
   const byAgency = groupBy(records, (r) => r.agency);
 
+  const dossierUrl = `${SITE.origin}/dossie/${slug}/`;
+
+  // Cap mainEntity item list at 50 to keep JSON-LD payload reasonable on
+  // dossiers with hundreds of records (biologics = 330). Declare the true
+  // size via numberOfItems so crawlers know there's more.
+  const itemList = records.slice(0, 50).map((r, idx) => ({
+    "@type": "ListItem",
+    position: idx + 1,
+    url: `${SITE.origin}/registro/${encodeURIComponent(r.id)}/`,
+    name: prettify(r.title),
+  }));
+
+  const collectionSchema = {
+    "@context": "https://schema.org",
+    "@type": "CollectionPage",
+    name: `Dossiê: ${dossier.title}`,
+    description: dossier.blurb || `${dossier.recordIds.length} documentos sobre ${dossier.title}.`,
+    url: dossierUrl,
+    inLanguage: SITE.language,
+    isAccessibleForFree: true,
+    publisher: PUBLISHER,
+    isPartOf: { "@type": "WebSite", name: SITE.name, url: `${SITE.origin}/` },
+    mainEntity: {
+      "@type": "ItemList",
+      numberOfItems: records.length,
+      itemListElement: itemList,
+    },
+  };
+
+  const breadcrumbSchema = {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    itemListElement: [
+      { "@type": "ListItem", position: 1, name: "Arquivo", item: `${SITE.origin}/` },
+      { "@type": "ListItem", position: 2, name: `Dossiê: ${dossier.title}`, item: dossierUrl },
+    ],
+  };
+
   return (
     <div className="mx-auto max-w-5xl px-6 py-12 md:py-16">
+      <JsonLd data={[collectionSchema, breadcrumbSchema]} />
       <Link
         href="/"
         className="ink-accent-link font-mono text-[0.62rem] uppercase tracking-stamp"

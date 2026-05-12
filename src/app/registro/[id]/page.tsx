@@ -3,6 +3,8 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { agencyLabel, formatDate, loadRecord, loadSearchIndex, typeLabel } from "@/lib/data";
 import { RelatedRecords } from "@/components/record/related";
+import { JsonLd } from "@/components/seo/json-ld";
+import { agencyAsOrganization, AUTHOR_PERSON, PUBLISHER, SITE } from "@/lib/site";
 
 const DOSSIER_LABELS: Record<string, string> = {
   biologics: "Material biológico e biotécnico",
@@ -22,9 +24,21 @@ export async function generateMetadata({
   const { id } = await params;
   const record = await loadRecord(decodeURIComponent(id));
   if (!record) return { title: "Registro não encontrado" };
+
+  const description =
+    (record.blurb_pt || record.blurb || "").slice(0, 200) || undefined;
+  const canonical = `/registro/${encodeURIComponent(record.id)}`;
+
   return {
     title: prettify(record.title),
-    description: record.blurb?.slice(0, 200) || undefined,
+    description,
+    alternates: { canonical },
+    openGraph: {
+      title: prettify(record.title),
+      description,
+      url: `${SITE.origin}${canonical}/`,
+      type: "article",
+    },
   };
 }
 
@@ -43,8 +57,69 @@ export default async function RecordPage({
       (record.text_pt && record.text_pt.trim()),
   );
 
+  const recordUrl = `${SITE.origin}/registro/${encodeURIComponent(record.id)}/`;
+  const image =
+    record.type === "IMG" &&
+    /\.(png|jpe?g|webp|gif)(?:[?#]|$)/i.test(record.source_url)
+      ? record.source_url
+      : undefined;
+
+  const articleSchema = {
+    "@context": "https://schema.org",
+    "@type": "Article",
+    headline: prettify(record.title),
+    description: record.blurb_pt || record.blurb || undefined,
+    url: recordUrl,
+    inLanguage: record.text_pt ? ["pt-BR", "en"] : ["pt-BR"],
+    isAccessibleForFree: true,
+    license: "https://creativecommons.org/publicdomain/mark/1.0/",
+    author: agencyAsOrganization(record.agency),
+    publisher: PUBLISHER,
+    editor: AUTHOR_PERSON,
+    isPartOf: {
+      "@type": "Dataset",
+      name: "Documentos desclassificados do Pentágono sobre UAPs — Release 01",
+      url: `${SITE.origin}/`,
+    },
+    ...(record.source_url
+      ? {
+          isBasedOn: record.source_url,
+          mainEntityOfPage: { "@type": "WebPage", "@id": recordUrl },
+        }
+      : { mainEntityOfPage: { "@type": "WebPage", "@id": recordUrl } }),
+    ...(image ? { image: [image] } : {}),
+    ...(record.incident_location && record.incident_location !== "N/A"
+      ? { contentLocation: { "@type": "Place", name: record.incident_location } }
+      : {}),
+    keywords: [
+      record.agency,
+      record.type,
+      ...(record.dossiers || []).map((d) => DOSSIER_LABELS[d] || d),
+    ].filter(Boolean),
+  };
+
+  const breadcrumbSchema = {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    itemListElement: [
+      {
+        "@type": "ListItem",
+        position: 1,
+        name: "Arquivo",
+        item: `${SITE.origin}/`,
+      },
+      {
+        "@type": "ListItem",
+        position: 2,
+        name: prettify(record.title),
+        item: recordUrl,
+      },
+    ],
+  };
+
   return (
     <article className="mx-auto max-w-4xl px-6 py-12 md:py-16">
+      <JsonLd data={[articleSchema, breadcrumbSchema]} />
       <Link
         href="/"
         className="ink-accent-link font-mono text-[0.62rem] uppercase tracking-stamp"

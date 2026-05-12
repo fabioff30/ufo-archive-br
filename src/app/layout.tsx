@@ -4,6 +4,7 @@ import Script from "next/script";
 import "./globals.css";
 import { SiteHeader } from "@/components/site/header";
 import { SiteFooter } from "@/components/site/footer";
+import { SITE } from "@/lib/site";
 
 const GA_ID = process.env.NEXT_PUBLIC_GA_ID ?? "G-7QXF3BVR1J";
 
@@ -34,9 +35,29 @@ export const metadata: Metadata = {
     default: "Arquivo OVNI/UAP — Documentos do Pentágono em português",
     template: "%s — Arquivo OVNI/UAP",
   },
-  description:
-    "Busca em português nos documentos desclassificados do Pentágono sobre UAPs e UFOs. Release 01 — maio de 2026. FBI, NASA, USAF Project Blue Book, Departamento de Guerra e Estado.",
-  metadataBase: new URL("https://ufo-archive-br.vercel.app"),
+  description: SITE.description,
+  metadataBase: new URL(SITE.origin),
+  alternates: { canonical: "/" },
+  openGraph: {
+    type: "website",
+    locale: "pt_BR",
+    url: SITE.origin,
+    siteName: SITE.name,
+    title: "Arquivo OVNI/UAP — Documentos do Pentágono em português",
+    description: SITE.description,
+  },
+  twitter: { card: "summary_large_image", title: SITE.name, description: SITE.description },
+  robots: {
+    index: true,
+    follow: true,
+    googleBot: {
+      index: true,
+      follow: true,
+      "max-snippet": -1,
+      "max-image-preview": "large",
+      "max-video-preview": -1,
+    },
+  },
 };
 
 export default function RootLayout({

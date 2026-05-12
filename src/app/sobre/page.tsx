@@ -1,18 +1,57 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { loadMeta } from "@/lib/data";
+import { JsonLd } from "@/components/seo/json-ld";
+import { AUTHOR_PERSON, PUBLISHER, SITE } from "@/lib/site";
 
 export const metadata: Metadata = {
   title: "Sobre o arquivo",
   description:
     "Como o Arquivo OVNI/UAP BR foi montado: fonte primária, escopo, metodologia e contato.",
+  alternates: { canonical: "/sobre" },
+  openGraph: {
+    title: "Sobre o arquivo — Arquivo OVNI/UAP",
+    description:
+      "Quem fez, qual a metodologia, como foi traduzido e como citar com responsabilidade.",
+    url: `${SITE.origin}/sobre/`,
+    type: "website",
+  },
 };
 
 export default async function AboutPage() {
   const meta = await loadMeta();
 
+  const aboutSchema = [
+    {
+      "@context": "https://schema.org",
+      "@type": "AboutPage",
+      name: "Sobre o Arquivo OVNI/UAP",
+      url: `${SITE.origin}/sobre/`,
+      description:
+        "Metodologia, fonte primária e crédito editorial do Arquivo OVNI/UAP BR.",
+      inLanguage: SITE.language,
+      publisher: PUBLISHER,
+      mainEntity: AUTHOR_PERSON,
+      isPartOf: { "@type": "WebSite", name: SITE.name, url: `${SITE.origin}/` },
+    },
+    {
+      "@context": "https://schema.org",
+      ...PUBLISHER,
+      description:
+        "FF Media — empresa especializada em construir soluções com inteligência artificial.",
+      url: PUBLISHER.url,
+    },
+    {
+      "@context": "https://schema.org",
+      ...AUTHOR_PERSON,
+      description:
+        "Jornalista de formação, desenvolvedor de sites e consultor de marketing. Editor do Arquivo OVNI/UAP BR.",
+    },
+  ];
+
   return (
     <article className="mx-auto max-w-3xl px-6 py-16 md:py-24">
+      <JsonLd data={aboutSchema} />
       <p className="font-mono text-[0.62rem] uppercase tracking-stamp text-ink-muted">
         Sobre · metodologia
       </p>
