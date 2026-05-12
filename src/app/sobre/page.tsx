@@ -81,8 +81,9 @@ export default async function AboutPage() {
               <strong className="font-display text-ink">
                 Busca textual no navegador
               </strong>{" "}
-              — sem servidor, sem rastreamento. O índice de busca cabe no seu
-              navegador.
+              — o índice de busca cabe no seu navegador, sem chamada a servidor
+              externo. Métricas anônimas de uso do site são coletadas via
+              Google Analytics.
             </span>
           </li>
         </ul>
