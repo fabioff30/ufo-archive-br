@@ -55,7 +55,7 @@ export default async function DossierPage({
             {dossier.recordIds.length} documentos
           </span>
         </div>
-        <h1 className="font-display text-[40px] font-medium leading-[1.05] tracking-tight md:text-[60px]">
+        <h1 className="font-display text-[30px] font-medium leading-[1.1] tracking-tight sm:text-[40px] sm:leading-[1.05] lg:text-[60px]">
           {dossier.title}
         </h1>
         {dossier.blurb ? (
@@ -100,10 +100,10 @@ function DossierItem({
       style={{ animationDelay: `${Math.min(index, 12) * 30}ms` }}
     >
       <div className="flex items-baseline justify-between gap-4">
-        <span className="font-display text-lg leading-snug group-hover:text-accent">
+        <span className="min-w-0 flex-1 font-display text-lg leading-snug [overflow-wrap:anywhere] group-hover:text-accent">
           {prettify(record.title)}
         </span>
-        <span className="font-mono text-[0.62rem] uppercase tracking-stamp text-ink-faint">
+        <span className="shrink-0 font-mono text-[0.62rem] uppercase tracking-stamp text-ink-faint">
           {typeLabel(record.type)}
         </span>
       </div>
@@ -111,7 +111,7 @@ function DossierItem({
         const b = record.blurb_pt || record.blurb;
         if (!b) return null;
         return (
-          <p className="mt-2 max-w-[68ch] text-sm leading-relaxed text-ink-muted">
+          <p className="mt-2 max-w-[68ch] text-sm leading-relaxed text-ink-muted [overflow-wrap:anywhere]">
             {b.length > 220 ? `${b.slice(0, 217)}…` : b}
           </p>
         );

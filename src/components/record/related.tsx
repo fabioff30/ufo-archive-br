@@ -23,8 +23,8 @@ export function RelatedRecords({
               href={`/registro/${encodeURIComponent(item.id)}`}
               className="group flex items-baseline justify-between gap-4 border-b border-rule-soft pb-3 hover:border-accent"
             >
-              <span className="space-y-1">
-                <span className="block font-display text-base leading-snug group-hover:text-accent">
+              <span className="min-w-0 flex-1 space-y-1">
+                <span className="block font-display text-base leading-snug [overflow-wrap:anywhere] group-hover:text-accent">
                   {prettify(item.title)}
                 </span>
                 {item.type ? (

@@ -19,42 +19,61 @@ export function RecordCard({
 
   return (
     <article
-      className="reveal group relative flex flex-col gap-4 border-b border-rule pb-6 pt-2"
+      className="reveal group relative flex gap-4 border-b border-rule pb-6 pt-2 md:gap-6"
       style={{ animationDelay: `${Math.min(index, 18) * 35}ms` }}
     >
-      <header className="flex items-start justify-between gap-4">
-        <div className="space-y-2">
-          <p className="font-mono text-[0.62rem] uppercase tracking-stamp text-ink-muted">
-            №&nbsp;{number} · {agencyLabel(record.agency)}
-          </p>
-          <h3 className="font-display text-[20px] leading-[1.15] tracking-tight md:text-[22px]">
-            <Link
-              href={`/registro/${encodeURIComponent(record.id)}`}
-              className="transition-colors group-hover:text-accent"
-            >
-              {prettifyTitle(record.title)}
-            </Link>
-          </h3>
-        </div>
-        <span className="stamp shrink-0 border-rule text-ink-muted">
-          {typeLabel(record.type)}
-        </span>
-      </header>
-
-      {record.blurb_pt || record.blurb ? (
-        <p className="max-w-[65ch] text-[15px] leading-relaxed text-ink-soft">
-          <Highlight text={record.blurb_pt || record.blurb} query={query} />
-        </p>
+      {record.image_url ? (
+        <Link
+          href={`/registro/${encodeURIComponent(record.id)}`}
+          className="block shrink-0"
+          aria-hidden
+          tabIndex={-1}
+        >
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img
+            src={record.image_url}
+            alt=""
+            loading="lazy"
+            className="h-20 w-20 border border-rule object-cover transition-opacity group-hover:opacity-90 md:h-32 md:w-32"
+          />
+        </Link>
       ) : null}
 
-      <footer className="flex flex-wrap items-center gap-x-5 gap-y-2 pt-1 font-mono text-[0.68rem] uppercase tracking-meta text-ink-muted">
-        <span>{dateLabel}</span>
-        {loc ? <span className="normal-case tracking-normal text-ink-faint">{loc}</span> : null}
-        {record.has_thumb ? <Badge>com imagem</Badge> : null}
-        {record.has_video ? <Badge>com vídeo</Badge> : null}
-        {record.has_text ? <Badge>texto integral</Badge> : null}
-        {record.redacted ? <Badge tone="accent">tarjado</Badge> : null}
-      </footer>
+      <div className="flex min-w-0 flex-1 flex-col gap-4">
+        <header className="flex items-start justify-between gap-4">
+          <div className="space-y-2">
+            <p className="font-mono text-[0.62rem] uppercase tracking-stamp text-ink-muted">
+              №&nbsp;{number} · {agencyLabel(record.agency)}
+            </p>
+            <h3 className="font-display text-[20px] leading-[1.15] tracking-tight [overflow-wrap:anywhere] md:text-[22px]">
+              <Link
+                href={`/registro/${encodeURIComponent(record.id)}`}
+                className="transition-colors group-hover:text-accent"
+              >
+                {prettifyTitle(record.title)}
+              </Link>
+            </h3>
+          </div>
+          <span className="stamp shrink-0 border-rule text-ink-muted">
+            {typeLabel(record.type)}
+          </span>
+        </header>
+
+        {record.blurb_pt || record.blurb ? (
+          <p className="max-w-[65ch] text-[15px] leading-relaxed text-ink-soft [overflow-wrap:anywhere]">
+            <Highlight text={record.blurb_pt || record.blurb} query={query} />
+          </p>
+        ) : null}
+
+        <footer className="flex flex-wrap items-center gap-x-5 gap-y-2 pt-1 font-mono text-[0.68rem] uppercase tracking-meta text-ink-muted">
+          <span>{dateLabel}</span>
+          {loc ? <span className="normal-case tracking-normal text-ink-faint">{loc}</span> : null}
+          {record.has_thumb ? <Badge>com imagem</Badge> : null}
+          {record.has_video ? <Badge>com vídeo</Badge> : null}
+          {record.has_text ? <Badge>texto integral</Badge> : null}
+          {record.redacted ? <Badge tone="accent">tarjado</Badge> : null}
+        </footer>
+      </div>
     </article>
   );
 }

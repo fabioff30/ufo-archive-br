@@ -140,6 +140,7 @@ async function main() {
     has_translation: boolean;
     redacted: boolean;
     dossiers: string[];
+    image_url?: string;
   }> = [];
 
   const dossierMap: Record<string, { title: string; blurb: string; recordIds: string[] }> = {};
@@ -170,6 +171,13 @@ async function main() {
         : blurbPtRaw
       : undefined;
 
+    // Only IMG records have a public image URL we can hot-link directly
+    // (war.gov hosts them at the source_url for .png/.jpg/.webp/.gif).
+    const isPublicImage =
+      type === "IMG" &&
+      typeof r.source_url === "string" &&
+      /\.(png|jpe?g|webp|gif)(?:[?#]|$)/i.test(r.source_url);
+
     search.push({
       id: r.id,
       title: r.title || r.id,
@@ -188,6 +196,7 @@ async function main() {
       has_translation: Boolean(tr && (tr.blurb_pt || tr.text_pt)),
       redacted: r.redaction === "TRUE",
       dossiers,
+      ...(isPublicImage ? { image_url: r.source_url as string } : {}),
     });
 
     for (const dKey of dossiers) {

@@ -82,7 +82,17 @@ export function SiteFooter() {
         </div>
         <div className="mt-12 flex flex-wrap items-center justify-between gap-4 border-t border-rule-soft pt-6 font-mono text-[0.65rem] uppercase tracking-stamp text-ink-faint">
           <span>© {new Date().getFullYear()} · Domínio público (EUA)</span>
-          <span>Editoria independente em PT-BR</span>
+          <span>
+            Um projeto{" "}
+            <a
+              href="https://www.ffmedia.com.br/"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-ink-muted underline-offset-4 hover:text-accent hover:underline"
+            >
+              FF Media ↗
+            </a>
+          </span>
         </div>
       </div>
     </footer>

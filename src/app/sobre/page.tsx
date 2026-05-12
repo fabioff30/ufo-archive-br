@@ -16,7 +16,7 @@ export default async function AboutPage() {
       <p className="font-mono text-[0.62rem] uppercase tracking-stamp text-ink-muted">
         Sobre · metodologia
       </p>
-      <h1 className="mt-4 font-display text-[44px] font-medium leading-[1.05] tracking-tight md:text-[56px]">
+      <h1 className="mt-4 font-display text-[30px] font-medium leading-[1.1] tracking-tight sm:text-[44px] sm:leading-[1.05] lg:text-[56px]">
         Um arquivo do governo,{" "}
         <span className="text-accent">organizado em português.</span>
       </h1>
@@ -134,8 +134,83 @@ export default async function AboutPage() {
         <hr className="border-rule" />
 
         <h2 className="font-display text-[26px] font-medium tracking-tight text-ink">
-          Crédito e contato
+          Quem fez
         </h2>
+        <p>
+          Este arquivo é um projeto da{" "}
+          <a
+            href="https://www.ffmedia.com.br/"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="ink-accent-link font-medium"
+          >
+            FF Media
+          </a>
+          , empresa especializada em construir soluções com inteligência
+          artificial — produtos, automações e interfaces que conectam dados
+          públicos a leitores em português.
+        </p>
+
+        <div className="not-prose mt-6 flex flex-col gap-6 border-y border-rule py-8 sm:flex-row sm:items-start sm:gap-8">
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img
+            src="/fabio-perfil.webp"
+            alt="Fábio Figueiroa"
+            loading="lazy"
+            width={400}
+            height={400}
+            className="h-28 w-28 shrink-0 rounded-full border border-rule object-cover sm:h-32 sm:w-32"
+          />
+          <div className="space-y-3">
+            <div>
+              <p className="font-mono text-[0.62rem] uppercase tracking-stamp text-ink-muted">
+                Editor
+              </p>
+              <p className="mt-1 font-display text-[22px] font-medium leading-tight tracking-tight">
+                Fábio Figueiroa
+              </p>
+            </div>
+            <p className="text-[15px] leading-relaxed text-ink-soft">
+              Jornalista de formação, desenvolvedor de sites, consultor de
+              marketing e entusiasta de inteligência artificial. Criei este
+              arquivo para trazer ao leitor brasileiro material que, em geral,
+              só circula em inglês.
+            </p>
+            <ul className="flex flex-wrap gap-x-5 gap-y-2 font-mono text-[0.65rem] uppercase tracking-stamp text-ink-muted">
+              <li>
+                <a
+                  href="https://fabiofariasf.com.br"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="hover:text-accent"
+                >
+                  fabiofariasf.com.br ↗
+                </a>
+              </li>
+              <li>
+                <a
+                  href="https://linkedin.com/in/fabiofariasf"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="hover:text-accent"
+                >
+                  LinkedIn ↗
+                </a>
+              </li>
+              <li>
+                <a
+                  href="https://github.com/fabioff30"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="hover:text-accent"
+                >
+                  GitHub ↗
+                </a>
+              </li>
+            </ul>
+          </div>
+        </div>
+
         <p>
           Os documentos estão em domínio público nos EUA. O índice estruturado
           deste arquivo — metadados, blurbs em inglês, vínculos de similaridade
@@ -149,8 +224,8 @@ export default async function AboutPage() {
             zexiro/uap-disclosure-archive
           </a>
           {" "}no GitHub. O design, a tradução automática para PT-BR e a curadoria
-          deste site são iniciativa independente. Sugestões e correções podem
-          ser abertas como issue no repositório original.
+          deste site são iniciativa independente da FF Media. Sugestões e
+          correções podem ser abertas como issue no repositório original.
         </p>
 
         <div className="pt-4">

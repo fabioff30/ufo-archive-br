@@ -16,6 +16,7 @@ export type SearchRecord = {
   has_translation?: boolean;
   redacted: boolean;
   dossiers: string[];
+  image_url?: string;
 };
 
 export type IndexMeta = {

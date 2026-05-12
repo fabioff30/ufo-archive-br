@@ -96,7 +96,7 @@ export default async function RecordPage({
           ))}
         </div>
 
-        <h1 className="font-display text-[34px] font-medium leading-[1.08] tracking-tight md:text-[48px]">
+        <h1 className="font-display text-[26px] font-medium leading-[1.1] tracking-tight [overflow-wrap:anywhere] sm:text-[34px] sm:leading-[1.08] md:text-[48px]">
           {prettify(record.title)}
         </h1>
 
@@ -139,19 +139,23 @@ export default async function RecordPage({
       })()}
 
       {(() => {
-        const src = record.thumbnail_local || record.thumb_small;
-        if (!src || !/^https?:\/\//.test(src)) return null;
+        // Show the image inline only when source_url is a publicly hosted
+        // image (war.gov hosts PNG/JPG/etc for IMG-type records).
+        const isImage =
+          record.type === "IMG" &&
+          /\.(png|jpe?g|webp|gif)(?:[?#]|$)/i.test(record.source_url);
+        if (!isImage) return null;
         return (
-          <figure className="mt-10 overflow-hidden border border-rule bg-paper-warm">
+          <figure className="mt-10 overflow-hidden border border-rule bg-ink/5">
             {/* eslint-disable-next-line @next/next/no-img-element */}
             <img
-              src={src}
+              src={record.source_url}
               alt={`Imagem associada a ${prettify(record.title)}`}
               className="block w-full"
               loading="lazy"
             />
             <figcaption className="border-t border-rule px-4 py-3 font-mono text-[0.62rem] uppercase tracking-stamp text-ink-muted">
-              Material associado · cortesia war.gov
+              Original hospedado em war.gov · domínio público
             </figcaption>
           </figure>
         );
@@ -187,8 +191,8 @@ export default async function RecordPage({
                 </span>
               ) : null}
             </div>
-            <div className="paper-card relative overflow-hidden p-6 md:p-10">
-              <pre className="whitespace-pre-wrap break-words font-mono text-[13.5px] leading-[1.65] text-ink-soft">
+            <div className="paper-card relative overflow-x-auto p-4 md:p-10">
+              <pre className="whitespace-pre-wrap break-words [overflow-wrap:anywhere] font-mono text-[12.5px] leading-[1.65] text-ink-soft md:text-[13.5px]">
 {showTranslated ? textPt : textEn}
               </pre>
             </div>
@@ -198,8 +202,8 @@ export default async function RecordPage({
                   <span className="group-open:hidden">+ Ver transcrição original em inglês</span>
                   <span className="hidden group-open:inline">− Ocultar original</span>
                 </summary>
-                <div className="paper-card relative mt-3 overflow-hidden p-6 md:p-10">
-                  <pre className="whitespace-pre-wrap break-words font-mono text-[13.5px] leading-[1.65] text-ink-muted">
+                <div className="paper-card relative mt-3 overflow-x-auto p-4 md:p-10">
+                  <pre className="whitespace-pre-wrap break-words [overflow-wrap:anywhere] font-mono text-[12.5px] leading-[1.65] text-ink-muted md:text-[13.5px]">
 {textEn}
                   </pre>
                 </div>
@@ -252,7 +256,7 @@ export default async function RecordPage({
 
 function Meta({ label, value }: { label: string; value: string }) {
   return (
-    <div className="space-y-1 border-l border-rule pl-3">
+    <div className="space-y-1 border-b border-rule pb-3 md:border-b-0 md:border-l md:pb-0 md:pl-3">
       <dt className="font-mono text-[0.6rem] uppercase tracking-stamp text-ink-muted">
         {label}
       </dt>
