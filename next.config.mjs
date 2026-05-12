@@ -1,6 +1,5 @@
-import type { NextConfig } from "next";
-
-const nextConfig: NextConfig = {
+/** @type {import('next').NextConfig} */
+const nextConfig = {
   // Fully static export — writes to ./out at build time.
   // Required for shared static hosts (Hostinger, Cloudflare Pages, GitHub Pages).
   // Works on Vercel too: Vercel will serve the prerendered HTML directly.

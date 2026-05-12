@@ -33,8 +33,24 @@ async function main(): Promise<void> {
   try {
     await fs.access(OUT_DIR);
   } catch {
-    console.log("[postbuild] no out/ — skipping (server build?).");
-    return;
+    // If out/ doesn't exist after `next build`, output: "export" was NOT
+    // honored — typically a config-loading issue on the host. Dump the
+    // filesystem so the CI log shows where Next actually wrote.
+    console.error("[postbuild] FATAL: out/ not found after next build.");
+    console.error("[postbuild] Listing project root:");
+    const entries = await fs.readdir(ROOT, { withFileTypes: true });
+    for (const e of entries) {
+      const size = e.isDirectory() ? "(dir)" : "";
+      console.error(`  ${e.name} ${size}`);
+    }
+    try {
+      const dotnext = await fs.readdir(path.join(ROOT, ".next"));
+      console.error(`[postbuild] .next/ has ${dotnext.length} entries: ${dotnext.slice(0, 8).join(", ")}…`);
+    } catch {
+      console.error("[postbuild] .next/ also missing");
+    }
+    console.error("[postbuild] Hint: confirm next.config.{js,mjs} has output: 'export' and is being loaded.");
+    process.exit(1);
   }
 
   let removed = 0;
