@@ -1,0 +1,44 @@
+# Arquivo OVNI/UAP — Documentos do Pentágono em português brasileiro
+
+> Arquivo público com 1.150 documentos desclassificados pelo Departamento de Defesa dos Estados Unidos sobre Fenômenos Aéreos Não Identificados (UAP/UFO), liberados em maio de 2026 como "Release 01" pelo war.gov. Inclui arquivos de caso do FBI (1947–1968), transcrições da NASA das missões Apollo e Gemini, casos do Project Blue Book da USAF, e correspondências do Departamento de Guerra e do Departamento de Estado. Indexado, traduzido automaticamente para português brasileiro e cruzado com a fonte primária.
+
+Editado por Fábio Figueiroa (jornalista) como projeto da FF Media (https://www.ffmedia.com.br/). Conteúdo em domínio público (EUA); tradução para PT-BR feita por IA (Gemini 3.1 Flash Lite via OpenRouter). A fonte original em inglês está sempre referenciada em cada registro e é a autoridade para citações.
+
+## Estrutura principal
+
+- [Página inicial — busca + filtros](https://arquivos-ufo.cloud/): busca textual no acervo, filtros por agência, tipo e década, destaques curados e galeria de evidências fotográficas.
+- [Sobre o arquivo](https://arquivos-ufo.cloud/sobre/): metodologia, créditos, política de tradução automática e como citar.
+- [FAQ](https://arquivos-ufo.cloud/faq/): perguntas frequentes sobre o release, autenticidade, como acessar os PDFs originais.
+- [Sitemap completo](https://arquivos-ufo.cloud/sitemap.xml): índice XML com as 1.154 URLs.
+
+## Conteúdo por agência (totais)
+
+- USAF Project Blue Book: 553 registros (1947–1969)
+- FBI: 466 registros (case files 62-HQ-83894, 1947–1968)
+- Department of War: 105 registros (1944–presente)
+- NASA: 14 registros (Apollo 12, Apollo 17, Gemini VII, materiais visuais)
+- Department of State: 8 registros
+
+## Dossiês temáticos
+
+- [Material biológico e biotécnico](https://arquivos-ufo.cloud/dossie/biologics/): 330 documentos sobre amostras biológicas, restos orgânicos e investigações biotécnicas associadas aos UAPs.
+- [Audiências e depoimentos](https://arquivos-ufo.cloud/dossie/hearings/): 72 documentos de audiências formais e transcrições do Congresso dos EUA.
+
+## Casos emblemáticos
+
+- [Apollo 17 — Transcrição (1972)](https://arquivos-ufo.cloud/registro/NASA-UAP-D2_Apollo_17_Transcript_1972/): astronautas relatam objetos brilhantes a ~100 mil km da Terra durante trajeto translunar.
+- [Apollo 12 — Transcrição (1969)](https://arquivos-ufo.cloud/registro/NASA-UAP-D1_Apollo_12_Transcript_1969/): diálogo entre tripulação e Controle da Missão sobre avistamentos no caminho da Lua.
+- [FBI Case 62-HQ-83894 (Seção 1)](https://arquivos-ufo.cloud/registro/65_HS1-834228961_62-HQ-83894_Section_1/): primeira seção do principal arquivo de investigação do FBI sobre discos voadores.
+- [Foofighters / SHAEF (1944–1945)](https://arquivos-ufo.cloud/registro/331_120752_Numeric_Files_1944_1945_37153_German_Armament_Equipment_Documents/): fenômenos noturnos relatados por pilotos aliados na Segunda Guerra Mundial.
+- [Relatório COMETA (1999)](https://arquivos-ufo.cloud/registro/255_413270_UFO_s_and_Defense_What_Should_we_Prepare_For/): análise francesa militar sobre a hipótese extraterrestre para fins de defesa nacional.
+- [Project Blue Book #12 — Portland, Oregon (1947)](https://arquivos-ufo.cloud/registro/blue_book_12/): primeiro avistamento moderno registrado pela USAF.
+
+## Como citar
+
+O arquivo serve como índice em PT-BR. Para citação acadêmica ou jornalística, use o link da fonte primária (war.gov ou nicap.org) referenciado em cada registro. O texto traduzido é orientativo; a versão autoritativa é a original em inglês.
+
+## Optional
+
+- [Repositório no GitHub](https://github.com/fabioff30/ufo-archive-br): código-fonte do site (Next.js 16, static).
+- [Compilação base — zexiro/uap-disclosure-archive](https://github.com/zexiro/uap-disclosure-archive): projeto público que estruturou os metadados originais (blurbs em inglês, vínculos de similaridade, classificação por dossiê).
+- [Fonte primária — war.gov / Release 01](https://www.war.gov/medialink/ufo/release_1/): página oficial do Departamento de Defesa dos EUA com os PDFs originais.

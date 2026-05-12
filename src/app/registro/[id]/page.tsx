@@ -5,11 +5,12 @@ import { agencyLabel, formatDate, loadRecord, loadSearchIndex, typeLabel } from 
 import { RelatedRecords } from "@/components/record/related";
 import { JsonLd } from "@/components/seo/json-ld";
 import { agencyAsOrganization, AUTHOR_PERSON, PUBLISHER, SITE } from "@/lib/site";
+import { getDossierBySlug } from "@/lib/dossiers";
 
-const DOSSIER_LABELS: Record<string, string> = {
-  biologics: "Material biológico e biotécnico",
-  hearings: "Audiências e depoimentos",
-};
+// Look up the human-readable title of a dossier the record belongs to.
+// Records carry the data-tag slug (e.g. "biologics"); dossier definitions in
+// src/lib/dossiers.ts use the same slug for autoTag-based dossiers.
+const dossierLabel = (key: string) => getDossierBySlug(key)?.title ?? key;
 
 export async function generateStaticParams() {
   const records = await loadSearchIndex();
@@ -94,7 +95,7 @@ export default async function RecordPage({
     keywords: [
       record.agency,
       record.type,
-      ...(record.dossiers || []).map((d) => DOSSIER_LABELS[d] || d),
+      ...(record.dossiers || []).map((d) => dossierLabel(d)),
     ].filter(Boolean),
   };
 
@@ -166,7 +167,7 @@ export default async function RecordPage({
               href={`/dossie/${d}`}
               className="stamp border-rule text-ink-muted hover:border-accent hover:text-accent"
             >
-              {DOSSIER_LABELS[d] || d}
+              {dossierLabel(d)}
             </Link>
           ))}
         </div>
@@ -293,11 +294,11 @@ export default async function RecordPage({
           Arquivo original
         </h2>
         {record.source_url ? (
-          <div className="flex flex-wrap items-center gap-x-4 gap-y-2">
+          <cite className="not-italic flex flex-wrap items-center gap-x-4 gap-y-2">
             <a
               href={record.source_url}
               target="_blank"
-              rel="noopener noreferrer"
+              rel="noopener noreferrer external"
               download
               className="stamp border-ink text-ink hover:bg-ink hover:text-paper"
             >
@@ -306,7 +307,7 @@ export default async function RecordPage({
             <span className="font-mono text-[0.62rem] uppercase tracking-stamp text-ink-faint">
               {sourceHost(record.source_url)} · domínio público
             </span>
-          </div>
+          </cite>
         ) : (
           <p className="text-sm leading-relaxed text-ink-muted">
             Este registro não tem um arquivo associado. Consulte a{" "}

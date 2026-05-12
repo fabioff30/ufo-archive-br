@@ -5,10 +5,39 @@ import { agencyLabel, formatDate, loadDossiers, loadSearchIndex, typeLabel } fro
 import type { SearchRecord } from "@/lib/types";
 import { JsonLd } from "@/components/seo/json-ld";
 import { PUBLISHER, SITE } from "@/lib/site";
+import { DOSSIERS, getDossierBySlug } from "@/lib/dossiers";
+
+/**
+ * Resolves the records that belong to a dossier.
+ *
+ * Two sources of truth combine here:
+ *  1. Definitions in src/lib/dossiers.ts (curated intros + optional hand
+ *     -picked recordIds).
+ *  2. The data-tagged dossier map at public/idx/dossiers.json (records that
+ *     carry the dossier slug in their `dossiers` field — derived at build
+ *     time from the source release).
+ *
+ * For data-driven dossiers (biologics, hearings) the `autoTag` matches the
+ * map's key; for curated dossiers (apollo, foofighters, blue-book-1947)
+ * we use the explicit recordIds list.
+ */
+async function resolveDossier(slug: string) {
+  const def = getDossierBySlug(slug);
+  if (!def) return null;
+
+  const dataMap = await loadDossiers();
+  const ids = new Set<string>();
+  if (def.autoTag && dataMap[def.autoTag]) {
+    for (const id of dataMap[def.autoTag].recordIds) ids.add(id);
+  }
+  if (def.recordIds) {
+    for (const id of def.recordIds) ids.add(id);
+  }
+  return { def, ids };
+}
 
 export async function generateStaticParams() {
-  const dossiers = await loadDossiers();
-  return Object.keys(dossiers).map((slug) => ({ slug }));
+  return DOSSIERS.map((d) => ({ slug: d.slug }));
 }
 
 export async function generateMetadata({
@@ -17,19 +46,16 @@ export async function generateMetadata({
   params: Promise<{ slug: string }>;
 }): Promise<Metadata> {
   const { slug } = await params;
-  const dossiers = await loadDossiers();
-  const d = dossiers[slug];
-  if (!d) return { title: "Dossiê não encontrado" };
-  const description =
-    d.blurb || `${d.recordIds.length} documentos sobre ${d.title}.`;
+  const def = getDossierBySlug(slug);
+  if (!def) return { title: "Dossiê não encontrado" };
   const canonical = `/dossie/${slug}`;
   return {
-    title: `Dossiê: ${d.title}`,
-    description,
+    title: `Dossiê: ${def.title}`,
+    description: def.blurb,
     alternates: { canonical },
     openGraph: {
-      title: `Dossiê: ${d.title} — Arquivo OVNI/UAP`,
-      description,
+      title: `Dossiê: ${def.title} — Arquivo OVNI/UAP`,
+      description: def.blurb,
       url: `${SITE.origin}${canonical}/`,
       type: "website",
     },
@@ -42,12 +68,12 @@ export default async function DossierPage({
   params: Promise<{ slug: string }>;
 }) {
   const { slug } = await params;
-  const [dossiers, all] = await Promise.all([loadDossiers(), loadSearchIndex()]);
-  const dossier = dossiers[slug];
-  if (!dossier) notFound();
+  const resolved = await resolveDossier(slug);
+  if (!resolved) notFound();
+  const { def, ids } = resolved;
 
-  const idSet = new Set(dossier.recordIds);
-  const records = all.filter((r) => idSet.has(r.id));
+  const all = await loadSearchIndex();
+  const records = all.filter((r) => ids.has(r.id));
 
   const byAgency = groupBy(records, (r) => r.agency);
 
@@ -66,8 +92,8 @@ export default async function DossierPage({
   const collectionSchema = {
     "@context": "https://schema.org",
     "@type": "CollectionPage",
-    name: `Dossiê: ${dossier.title}`,
-    description: dossier.blurb || `${dossier.recordIds.length} documentos sobre ${dossier.title}.`,
+    name: `Dossiê: ${def.title}`,
+    description: def.blurb,
     url: dossierUrl,
     inLanguage: SITE.language,
     isAccessibleForFree: true,
@@ -85,7 +111,7 @@ export default async function DossierPage({
     "@type": "BreadcrumbList",
     itemListElement: [
       { "@type": "ListItem", position: 1, name: "Arquivo", item: `${SITE.origin}/` },
-      { "@type": "ListItem", position: 2, name: `Dossiê: ${dossier.title}`, item: dossierUrl },
+      { "@type": "ListItem", position: 2, name: `Dossiê: ${def.title}`, item: dossierUrl },
     ],
   };
 
@@ -103,17 +129,23 @@ export default async function DossierPage({
         <div className="flex items-center gap-3">
           <span className="stamp border-accent text-accent">Dossiê temático</span>
           <span className="font-mono text-[0.62rem] uppercase tracking-stamp text-ink-muted">
-            {dossier.recordIds.length} documentos
+            {records.length} documentos
           </span>
         </div>
         <h1 className="font-display text-[30px] font-medium leading-[1.1] tracking-tight sm:text-[40px] sm:leading-[1.05] lg:text-[60px]">
-          {dossier.title}
+          {def.title}
         </h1>
-        {dossier.blurb ? (
-          <p className="max-w-[62ch] font-display text-[20px] leading-relaxed text-ink-soft md:text-[22px]">
-            {dossier.blurb}
-          </p>
-        ) : null}
+        <p className="max-w-[62ch] font-display text-[20px] leading-relaxed text-ink-soft md:text-[22px]">
+          {def.blurb}
+        </p>
+
+        {/* Expanded editorial intro — split on blank lines into paragraphs,
+            optimized as standalone passages for LLM/AI quoting. */}
+        <div className="max-w-[65ch] space-y-4 pt-2 text-[16px] leading-relaxed text-ink-soft md:text-[17px]">
+          {def.intro.split(/\n\n+/).map((para, i) => (
+            <p key={i}>{para}</p>
+          ))}
+        </div>
       </header>
 
       <section className="mt-10 space-y-12">

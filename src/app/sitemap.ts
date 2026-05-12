@@ -1,13 +1,10 @@
 import type { MetadataRoute } from "next";
-import { loadSearchIndex, loadDossiers } from "@/lib/data";
+import { loadSearchIndex } from "@/lib/data";
 import { SITE } from "@/lib/site";
+import { DOSSIERS } from "@/lib/dossiers";
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
-  const [records, dossiers] = await Promise.all([
-    loadSearchIndex(),
-    loadDossiers(),
-  ]);
-
+  const records = await loadSearchIndex();
   const now = new Date();
 
   // Match the runtime URLs exactly: trailing slash on every route, encoded id
@@ -25,8 +22,14 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       changeFrequency: "monthly",
       priority: 0.5,
     },
-    ...Object.keys(dossiers).map((slug) => ({
-      url: `${SITE.origin}/dossie/${slug}/`,
+    {
+      url: `${SITE.origin}/faq/`,
+      lastModified: now,
+      changeFrequency: "monthly",
+      priority: 0.6,
+    },
+    ...DOSSIERS.map((d) => ({
+      url: `${SITE.origin}/dossie/${d.slug}/`,
       lastModified: now,
       changeFrequency: "monthly" as const,
       priority: 0.7,

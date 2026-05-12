@@ -44,6 +44,11 @@ export function SiteFooter() {
                   Sobre o projeto
                 </Link>
               </li>
+              <li>
+                <Link href="/faq" className="hover:text-accent">
+                  Perguntas frequentes
+                </Link>
+              </li>
             </ul>
           </div>
           <div className="space-y-3 text-sm">
